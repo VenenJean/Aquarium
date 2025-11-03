@@ -1,3 +1,4 @@
+//Verbindet die JS-Variablen mit den HTML-Elementen.
 const svg = document.getElementById("aquarium");
 const fishGroup = document.getElementById("fishGroup");
 const bubbles = document.getElementById("bubbles");
