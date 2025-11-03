@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Modern Aquarium Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <svg id="aquarium" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#0369a1" stop-opacity="0.3" />
+            </linearGradient>
+        </defs>
+        <rect width="800" height="500" rx="20" fill="url(#waterGrad)" />
+        <g id="bubbles"></g>
+        <g id="fishGroup"></g>
+    </svg>
+    <div class="ui">
+        <div class="bar-wrap">
+            <button id="feedBtn">Feed</button>
+            <div class="bar-label">Hunger</div>
+            <div class="bar"><i id="barH"></i></div>
+        </div>
+        <div class="bar-wrap">
+            <button id="filterBtn">Filter</button>
+            <div class="bar-label">Clarity</div>
+            <div class="bar"><i id="barC"></i></div>
+        </div>
+        <div class="bar-wrap">
+            <button id="lampBtn">Lamp</button>
+            <div class="bar-label">Temp</div>
+            <div class="bar"><i id="barT"></i></div>
+        </div>
+        <div class="bar-wrap">
+            <button id="phBtn">pH Adj</button>
+            <div class="bar-label">pH</div>
+            <div class="bar"><i id="barP"></i></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
