@@ -1,14 +1,3 @@
-const svg = document.getElementById("aquarium");
-const fishGroup = document.getElementById("fishGroup");
-const bubbles = document.getElementById("bubbles");
-const bars = {
-    h: document.getElementById("barH"),
-    c: document.getElementById("barC"),
-    t: document.getElementById("barT"),
-    p: document.getElementById("barP"),
-};
-let state = { hunger: 60, clarity: 50, temp: 24, ph: 7 };
-
 function createFish(n = 5) {
     for (let i = 0; i < n; i++) {
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -125,17 +114,3 @@ function decay() {
     state.ph += (Math.random() - 0.5) * 1;
 }
 
-createFish();
-updateBars();
-
-setInterval(() => {
-    animateFish();
-    drawBubbles();
-    decay();
-    updateBars();
-}, 50);
-
-feedBtn.onclick = () => actionFeed();
-filterBtn.onclick = () => actionFilter();
-lampBtn.onclick = () => actionLamp();
-phBtn.onclick = () => actionPh();
