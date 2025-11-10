@@ -13,11 +13,11 @@ createFish();
 updateBars();
 
 setInterval(() => {
-    animateFish();
-    drawBubbles();
-    decay();
-    updateBars();
-    updateThermometer();
+  animateFish();
+  drawBubbles();
+  decay();
+  updateBars();
+  updateThermometer();
 }, 50);
 
 //Verbindet die Buttons mit den Funktionen.
