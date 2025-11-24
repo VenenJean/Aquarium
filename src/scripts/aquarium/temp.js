@@ -1,4 +1,4 @@
-//Thermometer einblenden (Wasser-Temperatur).
+/* // Thermometer einblenden (Wasser-Temperatur).
 function showThermometer() {
   // Falls schon eins da ist → nichts machen
   if (document.getElementById("thermo")) return;
@@ -30,9 +30,9 @@ function showThermometer() {
 
   svg.appendChild(group);
   updateThermometer();
-}
+  } */
 
-// Temperaturbalken aktualisieren
+/* Temperaturbalken aktualisieren */
 function updateThermometer() {
   const mercury = document.getElementById("mercury");
   if (!mercury) return;
