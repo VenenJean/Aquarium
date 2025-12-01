@@ -29,4 +29,4 @@ phBtn.onclick = actionPh;
 // Doppel-Klick Events
 feedBtn.ondblclick = spawnFood;
 phBtn.ondblclick = spawnPhTablet;
-lampBtn.ondblclick = showThermometer;
+// lampBtn.ondblclick = showThermometer;
