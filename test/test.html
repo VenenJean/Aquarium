@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="apiForm" action="post">
+      <input type="text" id="q1" value="0">
+      <input type="text" id="q2" value="0">
+      <input type="text" id="q3" value="1">
+      <input type="text" id="q4" value="0">
+
+      <button id="saveBtn" onclick="sendData()">KLICK</button>
+    </form>
+    <textarea id="response"></textarea>
+    <script src="test.js"></script>
+
+     <script>
+    document.getElementById('apiForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const body = {
+        q1: document.getElementById('q1').value,
+        q2: document.getElementById('q2').value,
+        q3: document.getElementById('q3').value,
+        q4: document.getElementById('q4').value
+      };
+
+      // Send POST request to PHP API
+      const res = await fetch('api.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      // Show the API response on the page
+      document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
