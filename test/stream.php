@@ -5,7 +5,7 @@ header("Cache-Control: no-cache");
 header("Connection: keep-alive");
 
 $file = "data.json";
-$updateSignal = "update.txt";
+$updateSignal = "data.json";
 $lastChange = 0;
 
 while (true) {
