@@ -34,12 +34,12 @@ setInterval(() => {
         spawnFood();
       }
 
-<<<<<<< HEAD
-// Doppel-Klick Events
-feedBtn.ondblclick = spawnFood;
-phBtn.ondblclick = spawnPhTablet;
-// lampBtn.ondblclick = showThermometer;
-=======
+      // <<<<<<< HEAD
+      // // Doppel-Klick Events
+      // feedBtn.ondblclick = spawnFood;
+      // phBtn.ondblclick = spawnPhTablet;
+      // // lampBtn.ondblclick = showThermometer;
+      // =======
       if (data.I2 === "1") {
         actionFilter();
       }
@@ -57,4 +57,3 @@ phBtn.ondblclick = spawnPhTablet;
       console.error("Es gab ein Problem mit der Fetch-Operation:", error);
     });
 }, 1000);
->>>>>>> master
