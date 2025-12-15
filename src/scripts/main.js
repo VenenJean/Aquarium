@@ -34,6 +34,12 @@ setInterval(() => {
         spawnFood();
       }
 
+      // <<<<<<< HEAD
+      // // Doppel-Klick Events
+      // feedBtn.ondblclick = spawnFood;
+      // phBtn.ondblclick = spawnPhTablet;
+      // // lampBtn.ondblclick = showThermometer;
+      // =======
       if (data.I2 === "1") {
         actionFilter();
       }
