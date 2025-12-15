@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Statusanzeige</title>
+    <link rel="stylesheet" href="main.css" class="css" />
+  </head>
+  <body>
+    <h1>Statusanzeige</h1>
+    <div id="inputs">
+      <div>I1: <span class="lamp" id="I1"></span></div>
+      <div>I2: <span class="lamp" id="I2"></span></div>
+      <div>I3: <span class="lamp" id="I3"></span></div>
+      <div>I4: <span class="lamp" id="I4"></span></div>
+    </div>
+    <div id="outputs">
+      <div>
+        Q1:
+        <label class="switch"
+          ><input type="checkbox" id="Q1" /><span class="slider"></span
+        ></label>
+      </div>
+      <div>
+        Q2:
+        <label class="switch"
+          ><input type="checkbox" id="Q2" /><span class="slider"></span
+        ></label>
+      </div>
+      <div>
+        Q3:
+        <label class="switch"
+          ><input type="checkbox" id="Q3" /><span class="slider"></span
+        ></label>
+      </div>
+      <div>
+        Q4:
+        <label class="switch"
+          ><input type="checkbox" id="Q4" /><span class="slider"></span
+        ></label>
+      </div>
+    </div>
+
+    <script>
+      function updateStatus() {
+        fetch(
+          "api.php?action=sim" +
+            `&Q1=${document.getElementById("Q1").checked ? 1 : 0}` +
+            `&Q2=${document.getElementById("Q2").checked ? 1 : 0}` +
+            `&Q3=${document.getElementById("Q3").checked ? 1 : 0}` +
+            `&Q4=${document.getElementById("Q4").checked ? 1 : 0}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Netzwerkantwort war nicht ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            for (let i = 1; i <= 4; i++) {
+              const lampStatus = data["I" + i] === "1"; // "1" wird zu true, "0" wird zu false
+              document.getElementById("I" + i).className =
+                "lamp " + (lampStatus ? "on" : "off");
+            }
+          })
+          .catch((error) => {
+            console.error("Es gab ein Problem mit der Fetch-Operation:", error);
+          });
+      }
+
+      setInterval(updateStatus, 1000);
+      updateStatus();
+    </script>
+  </body>
+</html>

@@ -1,30 +1,36 @@
 <?php
-// stream.php
-header("Content-Type: text/event-stream");
+header("Content-Type: text/event-stream; charset=utf-8");
 header("Cache-Control: no-cache");
 header("Connection: keep-alive");
 
-$file = "data.json";
-$updateSignal = "data.json";
+set_time_limit(0);
+
+$file = __DIR__ . DIRECTORY_SEPARATOR . "data.json";
 $lastChange = 0;
 
 while (true) {
-    clearstatcache();
+    if (connection_aborted()) {
+        break;
+    }
 
-    // If file changed, send new data
-    $currentChange = file_exists($updateSignal) ? filemtime($updateSignal) : 0;
+    clearstatcache(false, $file);
+    $currentChange = file_exists($file) ? filemtime($file) : 0;
 
     if ($currentChange !== $lastChange) {
         $lastChange = $currentChange;
 
         if (file_exists($file)) {
             $data = file_get_contents($file);
-            echo "data: {$data}\n\n";
-            ob_flush();
-            flush();
+            // Send as SSE data: must escape newlines with \n lines already present, but SSE supports json text
+            echo "data: " . str_replace("\n", "\ndata: ", $data) . "\n\n";
+            @ob_flush();
+            @flush();
         }
     }
 
-    // keep the connection alive
-    sleep(1);
+    // heartbeat to keep connection alive
+    echo ": heartbeat\n\n";
+    @ob_flush();
+    @flush();
+
 }
