@@ -1,44 +1,47 @@
 <?php
-// Set response type
-header('Content-Type: application/json');
+// Set response type and CORS headers
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle GET request
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $params = $_GET; // query parameters, e.g. ?id=123
-    echo json_encode([
-        'method' => 'GET',
-        'received' => $params
-    ]);
+// Helper to send JSON response and exit
+function send_json($payload, $code = 200) {
+    http_response_code($code);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
+// Handle GET request
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $params = $_GET;
+    send_json([
+        'method' => 'GET',
+        'received' => $params
+    ]);
+}
+
 // Handle POST request
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     $body = file_get_contents('php://input'); // raw body
-//     $data = json_decode($body, true); // parse JSON
-//     echo json_encode([
-//         'method' => 'POST',
-//         'received' => $data
-//     ]);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Read JSON body
     $body = file_get_contents('php://input');
     $data = json_decode($body, true);
 
-    if (!is_array($data)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid JSON input']);
-        exit;
+    if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+        send_json(['error' => 'Invalid JSON input', 'details' => json_last_error_msg()], 400);
     }
 
-    // Extract your data fields
-    $q1 = $data['q1'] ?? null;
-    $q2 = $data['q2'] ?? null;
-    $q3 = $data['q3'] ?? null;
-    $q4 = $data['q4'] ?? null;
+    // Support both { q1,q2,q3,q4 } and { aquariumState: { q1,... } }
+    if (isset($data['aquariumState']) && is_array($data['aquariumState'])) {
+        $data = $data['aquariumState'];
+    }
 
-    // Prepare data for saving
+    // Extract and normalize fields
+    $q1 = array_key_exists('q1', $data) ? (is_numeric($data['q1']) ? (int)$data['q1'] : $data['q1']) : null;
+    $q2 = array_key_exists('q2', $data) ? (is_numeric($data['q2']) ? (int)$data['q2'] : $data['q2']) : null;
+    $q3 = array_key_exists('q3', $data) ? (is_numeric($data['q3']) ? (int)$data['q3'] : $data['q3']) : null;
+    $q4 = array_key_exists('q4', $data) ? (is_numeric($data['q4']) ? (int)$data['q4'] : $data['q4']) : null;
+
     $payload = [
         'timestamp' => date('Y-m-d H:i:s'),
         'q1' => $q1,
@@ -47,22 +50,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'q4' => $q4
     ];
 
-    // Save to data.json
-    file_put_contents('data.json', json_encode($payload, JSON_PRETTY_PRINT));
+    // Save atomically with lock
+    $dataFile = __DIR__ . DIRECTORY_SEPARATOR . 'data.json';
+    $tmp = tempnam(sys_get_temp_dir(), 'aq_');
+    if ($tmp === false) {
+        send_json(['error' => 'Could not create temp file'], 500);
+    }
 
-    // Send JSON response
-    echo json_encode([
+    $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if (file_put_contents($tmp, $json, LOCK_EX) === false || !rename($tmp, $dataFile)) {
+        @unlink($tmp);
+        send_json(['error' => 'Failed to save data'], 500);
+    }
+
+    send_json([
         'status' => 'success',
         'message' => 'Data received and saved successfully!',
         'received' => $payload
-    ]);
-    exit;
+    ], 201);
 }
 
-// Default: if other HTTP method
-http_response_code(405);
-echo json_encode(['error' => 'Method not allowed']);
-exit;
+// Method not allowed
+send_json(['error' => 'Method not allowed'], 405);
 ?>
 
 <script>
